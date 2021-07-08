@@ -3,19 +3,20 @@ const bcrypt = require('bcrypt');
 const _ = require('lodash');
 const {User, validate, validateLogin} = require('../models/user');
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 const router = express.Router();
 
-router.get('/me', auth, async (req, res) => {
+router.get('/me', auth, asyncHandler(async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select('-password');
     res.send(user);
   } catch(err) {
-    res.status(400).send(err)
+    res.status(400).send({status: 400, message: err});
   }
   
-});
+}));
 
-router.post('/register', async (req, res) => {
+router.post('/register', asyncHandler(async (req, res) => {
   const { error } = validate(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
   
@@ -34,10 +35,10 @@ router.post('/register', async (req, res) => {
     res.status(400).send({status: 400, message: err});
   }
   
-});
+}));
 
 // User Login
-router.post('/login', async (req, res) => {
+router.post('/login', asyncHandler(async (req, res) => {
   const { error } = validateLogin(req.body); 
   if (error) return res.status(400).send(error.details[0].message);
   
@@ -58,6 +59,30 @@ router.post('/login', async (req, res) => {
     res.status(400).send({status: 400, message: err});
   }
 
-});
+}));
+
+//** get all users */
+router.get('/', auth, asyncHandler(async (req, res) => {
+  try {
+    const users = await User.find().select('-password');
+    res.status(200).send({data: users});
+  } catch(err) {
+    res.status(400).send({status: 400, message: err});
+  }
+  
+}));
+
+//** get single users */
+router.get('/:id', auth, asyncHandler(async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await User.findOne({_id: id}).select('-password');
+    res.status(200).send(user);
+  } catch(err) {
+    res.status(400).send({status: 400, message: err});
+  }
+  
+}));
+
 
 module.exports = router; 
