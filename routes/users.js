@@ -51,9 +51,12 @@ router.post('/login', asyncHandler(async (req, res) => {
     if (!validPassword) return res.status(400).send({status: 400, message: 'Invalid email or password.'});
 
     const token = user.generateAuthToken();
+    const data = _.pick(user,  ['_id', 'profile_image_link', 'name', 'email']);
+    data.user_id = data._id;
 
-    res.header('auth-token', token).status(200)
-       .send({data: _.pick(user,  ['_id', 'profile_image_link', 'name', 'email']), token });
+    delete data._id;
+
+    res.header('auth-token', token).status(200).send({data, token });
 
   } catch(err) {
     res.status(400).send({status: 400, message: err});
