@@ -37,6 +37,20 @@ userSchema.methods.generateAuthToken = function() {
   return token;
 }
 
+userSchema.methods.adminPusherAuthToken = function() { 
+  const token = jwt.sign({
+    "roles": ["admin"]
+  }, JWT_PRIVATE_KEY);
+  return token;
+}
+
+userSchema.methods.userPusherAuthToken = function() { 
+  const token = jwt.sign({
+    user_id: this._id
+  }, JWT_PRIVATE_KEY);
+  return token;
+}
+
 const User = mongoose.model('User', userSchema);
 
 function validateUser(user) {

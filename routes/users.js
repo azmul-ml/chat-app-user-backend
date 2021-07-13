@@ -29,7 +29,14 @@ router.post('/register', asyncHandler(async (req, res) => {
     user.password = await bcrypt.hash(user.password, salt);
 
     await user.save();
-    res.status(201).send(user);
+
+    res.status(201).send({
+      roles: user.roles,
+      profile_image_link: user.profile_image_link,
+      user_id: user._id,
+      name: user.name,
+      email: user.email
+    });
 
   } catch(err) {
     res.status(400).send({status: 400, message: err});
