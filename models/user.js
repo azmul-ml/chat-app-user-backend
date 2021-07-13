@@ -59,6 +59,16 @@ function validateLogin(user) {
   return Joi.validate(user, schema);
 }
 
+function validatePusherPrivateChannel(pusher) {
+  const schema = {
+    socket_id: Joi.string().required(),
+    channel_name: Joi.string().required()
+  };
+
+  return Joi.validate(pusher, schema);
+}
+
 exports.User = User; 
+exports,validatePusherPrivateChannel = validatePusherPrivateChannel;
 exports.validate = validateUser;
 exports.validateLogin = validateLogin;
