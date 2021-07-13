@@ -8,12 +8,12 @@ router.post('/auth', asyncHandler(async (req, res) => {
 
   try {
     const response = Pusher.authenticate(socket_id, channel_name);
+    
     res.send(response);
   } catch(err) {
     res.status(400).send({status: 400, message: err});
   }
   
 }));
-
 
 module.exports = router; 
