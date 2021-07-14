@@ -13,10 +13,10 @@ router.post('/token', auth, asyncHandler(async (req, res) => {
    
     if(roles.length === 1) {
       const token = user.adminPusherAuthToken();
-      res.send(token);
+      res.status(200).send({access_token: token});
     } else {
       const token = user.userPusherAuthToken();
-      res.send(token);
+      res.status(200).send({access_token: token});
     }
 
   } catch(err) {
